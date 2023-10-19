@@ -15,7 +15,7 @@ it("Should not login with empty login", () => {
     .should("be.false");
   cy.get("#mail")
     .then(($el) => $el[0].validationMessage)
-    .should("contain", "Please fill out this field.");
+    .should("contain", "Заполните это поле.");
 });
 
 it("Should not login with empty password", () => {
