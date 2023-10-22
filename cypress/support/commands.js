@@ -30,3 +30,30 @@ Cypress.Commands.add("login", (login, password) => {
   cy.get("#pass").type(password);
   cy.contains("Submit").click();
 });
+
+Cypress.Commands.add("loginOnly", (login) => {
+  cy.contains("Log in").click();
+  cy.get("#mail").type(login);
+  cy.contains("Submit").click();
+});
+
+Cypress.Commands.add("typing", (selector, text) => {
+  cy.get(selector).type(text);
+});
+
+Cypress.Commands.add("addBook", (title, description, author, favorite) => {
+  cy.contains("Add new").click();
+  cy.get("#title").type(title);
+  cy.get("#description").type(description);
+  cy.get("#authors").type(author);
+  if (favorite) {
+    cy.get("#favorite").click();
+  }
+  cy.contains("Submit").click();
+});
+
+Cypress.Commands.add("favorite", (title) => {
+  cy.contains("Favorites").click();
+
+  cy.contains(title).should("be.visible");
+});

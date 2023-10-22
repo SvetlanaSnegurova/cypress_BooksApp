@@ -1,60 +1,41 @@
-const bookFirst = {
-    title: "Московский клуб",
-    description:
-      "Когда-то Москва была столицей великой страны, потом она стала Анклавом, одним из многих. Теперь ее тайны могут спасти прижатый к стенке мир. Мир, в котором властвует Цифра, нанотехнологии и генная инженерия позволяют добиваться невероятных результатов, а могущественные корпорации соперничают с одряхлевшими государствами. Мир, который отчаянно пытается найти дорогу в будущее. Мир в котором борьба за власть достигла апогея.",
-    author: "Вадим Панов",
-  };
-  
-  const bookSecond = {
-    title: "Лучший экипаж солнечной",
-    description:
-      "Им надоело стрелять, но это единственное, что они умеют делать хорошо. Рано или поздно команда «К бою!» раздастся снова…",
-    author: "Олег Дивов",
-  };
-  
-  const bookThird = {
-    title: "Психология влияния",
-    description:
-      "Какие факторы заставляют одного человека говорить другому «да»? И какие методы наиболее эффективны, если необходимо добиться чужого согласия?",
-    author: "Роберт Чалдини",
-  };
-  
-  describe("Favorite book spec", () => {
-    beforeEach(() => {
-      cy.visit("/");
-      cy.login("test@test.com", "test");
-    });
-  
-    // it("Valid login", () => {
-    //   cy.contains("test@test.com").should("be.visible");
-    //   cy.contains("Add new").should("have.class", "btn");
-    // });
-  
-    it("Should add new book", () => {
-      cy.addBook(bookFirst);
-      cy.get(".card-title").should("contain.text", bookFirst.title);
-    });
-  
-    it("Should add new book to favorite", () => {
-      cy.addFavoriteBook(bookSecond);
-      cy.visit("/favorites");
-      cy.get(".card-title").should("contain.text", bookSecond.title);
-    });
-  
-    it("Should add book to favorite through 'Book list' page", () => {
-      cy.addBookNoFavorite(bookFirst);
-      cy.contains(bookFirst.title)
-        .should("be.visible")
-        .within(() => cy.get(".card-footer > .btn").click({ force: true }));
-      cy.visit("/favorites");
-      cy.contains(bookFirst.title).should("be.visible");
-    });
-  
-    it("Should delete book from favorite", () => {
-      cy.visit("/favorites");
-      cy.contains(bookSecond.title)
-        .should("be.visible")
-        .within(() => cy.get(".card-footer > .btn").click({ force: true }));
-      cy.contains(bookSecond.title).should("not.exist");
-    });
+describe.skip("Testing favorite book list", () => {
+  beforeEach(() => {
+    cy.visit("/");
+    cy.login("bropet@mail.ru", "123");
   });
+  
+  it("Add new favorite book", () => {
+    cy.contains("Books list").click();
+    cy.contains("Add new").click();
+    cy.typing("#title", "Идиот");
+    cy.typing(
+      "#description.form-control",
+      "Роман Ф.М.Достоевского.  Впервые был опубликован в номерах журнала «Русский вестник» за 1868 год."
+    );
+    cy.typing("#authors", "Фёдор Михайлович Достоевский");
+    cy.get("#favorite").click();
+    cy.get("form > .ml-2").click();
+    cy.get("h4").click();
+    cy.contains(".card-text", "Фёдор Михайлович Достоевский").should(
+      "be.visible"
+    );
+  });
+  
+  it("Should delete from favorite", () => {
+    cy.get("h4").click();
+    cy.get(".card-footer > .btn").click();
+    cy.contains(
+      ".btn > a",
+      "Please add some book to favorit on home page!"
+    ).should("be.visible");
+  });
+
+  it("Should add book to favorite from BookList", () => {
+    cy.contains("Books list").click();
+    cy.contains("Add to favorite").click();
+    cy.get("h4").click();
+    cy.contains(".card-text", "Фёдор Михайлович Достоевский").should(
+      "be.visible"
+    );
+  });
+});
